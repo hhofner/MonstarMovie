@@ -10,11 +10,12 @@ Table of Contents:
 
 /* 1. Theme Settings ––––––––––––––––––––-–––––––––––––– */
 
+/* TODO: Remove this & choose a better font */
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400");
 
 :root,
 html[data-theme="light"] {
-  --rem: 12pt;
+  --rem: 14pt;
   --width: 50rem;
   --navpos: absolute; /* fixed | absolute */
   --font-p: 1em/1.7 "Open Sans", Helvetica, sans-serif;
@@ -82,15 +83,19 @@ summary {
 html {
   font-size: var(--rem);
   background: var(--cbg);
+  height: 100%;
+  width: 100%;
 }
 body {
   position: relative;
   margin: auto;
   max-width: var(--width);
   font: var(--font-p);
-  color: var(--cfg);
-  padding: 3rem 0.6rem 0;
+  color: var(--cbg);
+  padding: 2rem 0.6rem 0;
   overflow-x: hidden;
+  height: 100%;
+  width: 100%;
 }
 body > footer {
   margin: 10rem 0rem 0rem;
