@@ -29,9 +29,11 @@ const MovieCard = styled.div<{
   translation: string;
 }>`
   position: relative;
-  transition: transform 500ms ease;
+  transition: transform 300ms ease;
   transform: ${(props) =>
-    `rotateY(${props.rotation}) translateX(${props.translation})`};
+    `rotateY(${props.rotation}) translateX(${props.translation})
+    scale(1.0) 
+    `};
 
   border: 2px solid black;
   border-radius: 15px;
@@ -52,6 +54,25 @@ const MovieCarousel = () => {
     }
   };
 
+  const calculateRotation = (currentIndex: number, indexOfMovie: number) => {
+    const baseRotation = 45;
+    if (currentIndex !== indexOfMovie) {
+      return (
+        Math.sign(currentIndex - indexOfMovie) * baseRotation +
+        (indexOfMovie - currentIndex) / 100
+      );
+    }
+
+    return 0;
+  };
+
+  const calculateTranslation = (currentIndex: number, indexOfMovie: number) => {
+    if (Math.abs(currentIndex - indexOfMovie) > 0) {
+      return 70;
+    }
+    return 1 + (currentIndex - indexOfMovie) / 100;
+  };
+
   const { isLoading, error, data } = useQuery("repoData", () =>
     //TODO: Do something about API key
     fetch(
@@ -61,7 +82,7 @@ const MovieCarousel = () => {
 
   if (isLoading) return <p>"Loading..."</p>;
 
-  //if (error) return "An error has occurred: " + error.message;
+  if (error) return "An error has occurred: ";
 
   return (
     <div>
@@ -71,8 +92,8 @@ const MovieCarousel = () => {
         {data.results.map((movie: any, index: number) => (
           <MovieCard
             key={movie.title}
-            rotation={`${translationMultiplier * (currentIndex - index)}deg`}
-            translation={`${50 * (index - currentIndex)}%`}
+            rotation={`${calculateRotation(currentIndex, index)}deg`}
+            translation={`${calculateTranslation(currentIndex, index)}%`}
           >
             <Image
               src={base + size + movie.backdrop_path || "noimage.svg"}
