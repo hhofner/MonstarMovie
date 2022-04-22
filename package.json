@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@styled-icons/fa-regular": "^10.34.0",
+    "@styled-icons/fa-solid": "^10.34.0",
     "@types/styled-components": "^5.1.25",
     "next": "12.1.5",
     "react": "18.0.0",
