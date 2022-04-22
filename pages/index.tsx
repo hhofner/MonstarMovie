@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import MovieCarousel from "../components/MovieCarousel";
 
 const Home: NextPage = () => {
   return (
@@ -12,6 +13,7 @@ const Home: NextPage = () => {
 
       <main>
         <h1>Monstar Movies</h1>
+        <MovieCarousel />
       </main>
 
       <footer></footer>
