@@ -9,6 +9,7 @@ import {
 } from "@styled-icons/fa-regular";
 import { useLocalStorage } from "../hooks/localStorage";
 import { useState } from "react";
+import { getMoviePath } from "../lib/helpers";
 
 interface Movie {
   title: string;
@@ -62,8 +63,6 @@ const MovieCarousel = () => {
   console.log({ likedMovies });
   const router = useRouter();
 
-  const base = "https://image.tmdb.org/t/p/";
-  const size = "original/";
   const baseTranslation = 70;
   const translationMultiplier = 1.5;
 
@@ -112,9 +111,9 @@ const MovieCarousel = () => {
     ).then((res) => res.json())
   );
 
-  if (isLoading) return <p>"Loading..."</p>;
+  if (isLoading) return <p>Loading</p>;
 
-  if (error) return <p>"An error has occurred: "</p>;
+  if (error) return <p>An error has occurred</p>;
   console.log(data);
 
   return (
@@ -131,7 +130,7 @@ const MovieCarousel = () => {
             onClick={() => handleMovieCardClick(index, movie.id)}
           >
             <Image
-              src={base + size + movie.backdrop_path || "noimage.svg"}
+              src={getMoviePath(movie.backdrop_path)}
               width={140}
               height={200}
               layout={"fixed"}
