@@ -222,6 +222,7 @@ svg {
   max-width: 100%;
   vertical-align: text-top;
   object-fit: cover;
+  border-radius: 15px;
 }
 p > img:not(:only-child) {
   float: right;
