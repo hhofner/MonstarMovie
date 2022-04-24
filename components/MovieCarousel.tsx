@@ -28,6 +28,7 @@ const MovieContainer = styled.div`
   transform-style: preserve-3d;
   perspective: 900px;
   padding: 3rem;
+  overflow: hidden;
 `;
 
 const LeftArrow = styled(ArrowAltCircleLeft)`
@@ -45,16 +46,16 @@ const MovieCard = styled.div<{
   translation: string;
   isFocused: boolean;
 }>`
+  width: 140px;
   position: relative;
   transition: transform 300ms ease;
   transform: ${(props) =>
-    `rotateY(${props.rotation}) translateX(${props.translation})
-    scale(1.0) 
+    ` translateX(${props.translation})
+ rotateY(${props.rotation}) ${props.isFocused ? "scale(1.2)" : "scale(1.0)"} 
     `};
 
-  border: 2px solid black;
-  border-radius: 15px;
-  ${(props) => props.isFocused && "cursor: pointer"}
+  ${(props) => props.isFocused && "cursor: pointer; z-index: 5"}
+  ${(props) => !props.isFocused && "opacity: 0.65"}
 `;
 
 const MovieCarousel = () => {
@@ -66,7 +67,11 @@ const MovieCarousel = () => {
   const baseTranslation = 70;
   const translationMultiplier = 1.5;
 
-  const handleRight = () => setCurrentIndex(currentIndex + 1);
+  const handleRight = () => {
+    if (currentIndex < data.results.length) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
   const handleLeft = () => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
@@ -93,11 +98,13 @@ const MovieCarousel = () => {
   };
 
   const calculateTranslation = (currentIndex: number, indexOfMovie: number) => {
-    return currentIndex * 70;
+    return currentIndex * -110;
   };
 
   const handleMovieCardClick = (movieIndex: number, movieId: number) => {
-    if (movieIndex !== movieIndex) {
+    console.log({ movieIndex });
+    console.log({ movieId });
+    if (movieIndex !== currentIndex) {
       setCurrentIndex(movieIndex);
     } else {
       router.push(`${movieId}`);
@@ -114,7 +121,6 @@ const MovieCarousel = () => {
   if (isLoading) return <p>Loading</p>;
 
   if (error) return <p>An error has occurred</p>;
-  console.log(data);
 
   return (
     <div>
@@ -126,7 +132,7 @@ const MovieCarousel = () => {
             key={movie.title + `${index}`}
             isFocused={index === currentIndex}
             rotation={`${calculateRotation(currentIndex, index)}deg`}
-            translation={"0"}
+            translation={`${calculateTranslation(currentIndex, index)}px`}
             onClick={() => handleMovieCardClick(index, movie.id)}
           >
             <Image
