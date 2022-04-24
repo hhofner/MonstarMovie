@@ -42,5 +42,5 @@ const Header2 = styled.h2`
   background-clip: text;
 `;
 
-export const GradientH1 = (props) => <Header>{props.children}</Header>;
-export const GradientH2 = (props) => <Header2>{props.children}</Header2>;
+export const GradientH1 = (props: any) => <Header>{props.children}</Header>;
+export const GradientH2 = (props: any) => <Header2>{props.children}</Header2>;
