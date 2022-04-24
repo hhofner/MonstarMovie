@@ -1,9 +1,12 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { GradientH1, GradientH5 } from "../components/gradientHeader";
 import styled from "styled-components";
 import MovieCarousel from "../components/MovieCarousel";
+import SearchBar from "../components/SearchBar";
 
 const Header = styled.div`
   display: flex;
@@ -12,6 +15,8 @@ const Header = styled.div`
 `;
 
 const Home: NextPage = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
   return (
     <div>
       <Head>
@@ -24,10 +29,15 @@ const Home: NextPage = () => {
         <Header>
           <GradientH1>Monstar Movies</GradientH1>
           <Link href="likes">
-            <GradientH5>My Movies</GradientH5>
+            <a>
+              <GradientH5 onClick={() => router.push("/likes")}>
+                My Movies
+              </GradientH5>
+            </a>
           </Link>
         </Header>
-        <MovieCarousel />
+        <SearchBar onInputChange={(s: string) => setSearchTerm(s)} />
+        <MovieCarousel searchItem={searchTerm} />
       </main>
 
       <footer></footer>
