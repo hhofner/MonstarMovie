@@ -1,10 +1,13 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import styled from "styled-components";
 import { useQuery } from "react-query";
 import {
   ArrowAltCircleLeft,
   ArrowAltCircleRight,
+  Heart,
 } from "@styled-icons/fa-regular";
+import { useLocalStorage } from "../hooks/localStorage";
 import { useState } from "react";
 
 interface Movie {
@@ -14,19 +17,32 @@ interface Movie {
 
 const Controls = styled.div`
   display: flex;
+  justify-content: center;
+  gap: 0.5rem;
 `;
 
 const MovieContainer = styled.div`
-  overflow-x: scroll;
+  overflow-x: hidden;
   display: flex;
   transform-style: preserve-3d;
   perspective: 900px;
   padding: 3rem;
 `;
 
+const LeftArrow = styled(ArrowAltCircleLeft)`
+  cursor: pointer;
+`;
+const RightArrow = styled(ArrowAltCircleRight)`
+  cursor: pointer;
+`;
+const LikeButton = styled(Heart)`
+  cursor: pointer;
+`;
+
 const MovieCard = styled.div<{
   rotation: string;
   translation: string;
+  isFocused: boolean;
 }>`
   position: relative;
   transition: transform 300ms ease;
@@ -37,10 +53,14 @@ const MovieCard = styled.div<{
 
   border: 2px solid black;
   border-radius: 15px;
+  ${(props) => props.isFocused && "cursor: pointer"}
 `;
 
 const MovieCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [likedMovies, setLikedMovies] = useLocalStorage<number[]>("movies", []);
+  console.log({ likedMovies });
+  const router = useRouter();
 
   const base = "https://image.tmdb.org/t/p/";
   const size = "original/";
@@ -51,6 +71,13 @@ const MovieCarousel = () => {
   const handleLeft = () => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
+    }
+  };
+  const handleLike = (movieId: number) => {
+    if (!likedMovies.includes(movieId)) {
+      setLikedMovies([...likedMovies, movieId]);
+    } else {
+      setLikedMovies([...likedMovies.filter((id: number) => id !== movieId)]);
     }
   };
 
@@ -67,10 +94,15 @@ const MovieCarousel = () => {
   };
 
   const calculateTranslation = (currentIndex: number, indexOfMovie: number) => {
-    if (Math.abs(currentIndex - indexOfMovie) > 0) {
-      return 70;
+    return currentIndex * 70;
+  };
+
+  const handleMovieCardClick = (movieIndex: number, movieId: number) => {
+    if (movieIndex !== movieIndex) {
+      setCurrentIndex(movieIndex);
+    } else {
+      router.push(`${movieId}`);
     }
-    return 1 + (currentIndex - indexOfMovie) / 100;
   };
 
   const { isLoading, error, data } = useQuery("repoData", () =>
@@ -82,7 +114,8 @@ const MovieCarousel = () => {
 
   if (isLoading) return <p>"Loading..."</p>;
 
-  if (error) return "An error has occurred: ";
+  if (error) return <p>"An error has occurred: "</p>;
+  console.log(data);
 
   return (
     <div>
@@ -91,9 +124,11 @@ const MovieCarousel = () => {
       <MovieContainer>
         {data.results.map((movie: any, index: number) => (
           <MovieCard
-            key={movie.title}
+            key={movie.title + `${index}`}
+            isFocused={index === currentIndex}
             rotation={`${calculateRotation(currentIndex, index)}deg`}
-            translation={`${calculateTranslation(currentIndex, index)}%`}
+            translation={"0"}
+            onClick={() => handleMovieCardClick(index, movie.id)}
           >
             <Image
               src={base + size + movie.backdrop_path || "noimage.svg"}
@@ -101,13 +136,18 @@ const MovieCarousel = () => {
               height={200}
               layout={"fixed"}
             />
-            {/* {movie.title} */}
+            {movie.title}
           </MovieCard>
         ))}
       </MovieContainer>
       <Controls>
-        <ArrowAltCircleLeft size="40" onClick={handleLeft} />
-        <ArrowAltCircleRight size="40" onClick={handleRight} />
+        <LeftArrow size="40" onClick={handleLeft} />
+        {/* TODO: Handle possible no data */}
+        <LikeButton
+          size="40"
+          onClick={() => handleLike(data.results[currentIndex].id)}
+        />
+        <RightArrow size="40" onClick={handleRight} />
       </Controls>
     </div>
   );
