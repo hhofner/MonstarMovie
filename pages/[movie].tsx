@@ -1,14 +1,52 @@
+import Image from "next/image";
 import { GetServerSideProps } from "next";
-import { useQuery } from "react-query";
+import styled from "styled-components";
+import { getMoviePath } from "../lib/helpers";
+import { GradientH1 } from "../components/gradientHeader";
+import Link from "next/link";
 
 // Details page for movie
+const MovieDetailContainer = styled.div`
+  display: flex;
+  gap: 4rem;
+`;
+
+const MovieImage = styled.div`
+  flex-grow: 5;
+`;
+
+const TextDetails = styled.div``;
+
+const MinorDetails = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 
 const MoviePage = (props: any) => {
   console.log({ props });
   if (props.notFound) {
     return <div>Movie data could not be found</div>;
   } else {
-    return <div>Data found!</div>;
+    return (
+      <MovieDetailContainer>
+        <MovieImage>
+          <Image
+            src={getMoviePath(props.movieDetails.backdrop_path)}
+            width={420}
+            height={600}
+            layout={"fixed"}
+          />
+        </MovieImage>
+        <TextDetails>
+          <GradientH1>{props.movieDetails.original_title}</GradientH1>
+          <MinorDetails>
+            <small>{props.movieDetails.release_date}</small>
+            <small>${props.movieDetails.revenue}</small>
+          </MinorDetails>
+          <p>{props.movieDetails.overview}</p>
+        </TextDetails>
+      </MovieDetailContainer>
+    );
   }
 };
 
