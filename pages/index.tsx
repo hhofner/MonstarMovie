@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import { GradientH1 } from "../components/gradientHeader";
 import MovieCarousel from "../components/MovieCarousel";
 
 const Home: NextPage = () => {
@@ -12,7 +13,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main>
-        <h1>Monstar Movies</h1>
+        <GradientH1>Monstar Movies</GradientH1>
         <MovieCarousel />
       </main>
 
