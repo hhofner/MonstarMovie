@@ -7,6 +7,7 @@ import { GradientH1, GradientH5 } from "../components/gradientHeader";
 import styled from "styled-components";
 import MovieCarousel from "../components/MovieCarousel";
 import SearchBar from "../components/SearchBar";
+import { useDebounce } from "../hooks/useDebounce";
 
 const Header = styled.div`
   display: flex;
@@ -16,6 +17,7 @@ const Header = styled.div`
 
 const Home: NextPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const searchItem = useDebounce(searchTerm, 300);
   const router = useRouter();
   return (
     <div>
@@ -37,7 +39,7 @@ const Home: NextPage = () => {
           </Link>
         </Header>
         <SearchBar onInputChange={(s: string) => setSearchTerm(s)} />
-        <MovieCarousel searchItem={searchTerm} />
+        <MovieCarousel searchItem={searchItem} />
       </main>
 
       <footer></footer>

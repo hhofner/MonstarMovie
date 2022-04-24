@@ -56,7 +56,6 @@ const MovieCard = styled.div<{
 const MovieCarousel = ({ searchItem }: { searchItem: string }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [likedMovies, setLikedMovies] = useLocalStorage<number[]>("movies", []);
-  console.log({ likedMovies });
   const router = useRouter();
 
   const handleRight = () => {
@@ -105,7 +104,7 @@ const MovieCarousel = ({ searchItem }: { searchItem: string }) => {
     }
   };
 
-  const { isLoading, error, data } = useQuery("movieData", () =>
+  const { isLoading, error, data } = useQuery(["movieData", searchItem], () =>
     fetch(
       `https://api.themoviedb.org/3/search/movie?api_key=9d8745c4222208d2b3ffebd6d928ad1f&query=${searchItem}`
     ).then((res) => res.json())
