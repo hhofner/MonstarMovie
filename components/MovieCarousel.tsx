@@ -11,11 +11,6 @@ import { useLocalStorage } from "../hooks/localStorage";
 import { useState } from "react";
 import { getMoviePath } from "../lib/helpers";
 
-interface Movie {
-  title: string;
-  imageUrl: string;
-}
-
 const Controls = styled.div`
   display: flex;
   justify-content: center;
@@ -58,21 +53,20 @@ const MovieCard = styled.div<{
   ${(props) => !props.isFocused && "opacity: 0.65"}
 `;
 
-const MovieCarousel = () => {
+const MovieCarousel = ({ searchItem }: { searchItem: string }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [likedMovies, setLikedMovies] = useLocalStorage<number[]>("movies", []);
   console.log({ likedMovies });
   const router = useRouter();
 
-  const baseTranslation = 70;
-  const translationMultiplier = 1.5;
-
   const handleRight = () => {
+    if (!data.results) return;
     if (currentIndex < data.results.length) {
       setCurrentIndex(currentIndex + 1);
     }
   };
   const handleLeft = () => {
+    if (!data.results) return;
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
     }
@@ -111,10 +105,9 @@ const MovieCarousel = () => {
     }
   };
 
-  const { isLoading, error, data } = useQuery("repoData", () =>
-    //TODO: Do something about API key
+  const { isLoading, error, data } = useQuery("movieData", () =>
     fetch(
-      `https://api.themoviedb.org/3/search/movie?api_key=9d8745c4222208d2b3ffebd6d928ad1f&query=batman`
+      `https://api.themoviedb.org/3/search/movie?api_key=9d8745c4222208d2b3ffebd6d928ad1f&query=${searchItem}`
     ).then((res) => res.json())
   );
 
@@ -127,30 +120,36 @@ const MovieCarousel = () => {
       {/* TODO: Handle images that are not rectangle up*/}
       {/* TODO: Handle no data */}
       <MovieContainer>
-        {data.results.map((movie: any, index: number) => (
-          <MovieCard
-            key={movie.title + `${index}`}
-            isFocused={index === currentIndex}
-            rotation={`${calculateRotation(currentIndex, index)}deg`}
-            translation={`${calculateTranslation(currentIndex, index)}px`}
-            onClick={() => handleMovieCardClick(index, movie.id)}
-          >
-            <Image
-              src={getMoviePath(movie.backdrop_path)}
-              width={140}
-              height={200}
-              layout={"fixed"}
-            />
-            {movie.title}
-          </MovieCard>
-        ))}
+        {data.results ? (
+          data.results.map((movie: any, index: number) => (
+            <MovieCard
+              key={movie.title + `${index}`}
+              isFocused={index === currentIndex}
+              rotation={`${calculateRotation(currentIndex, index)}deg`}
+              translation={`${calculateTranslation(currentIndex, index)}px`}
+              onClick={() => handleMovieCardClick(index, movie.id)}
+            >
+              <Image
+                src={getMoviePath(movie.backdrop_path)}
+                width={140}
+                height={200}
+                layout={"fixed"}
+              />
+              {movie.title}
+            </MovieCard>
+          ))
+        ) : (
+          <div>Could not find any results</div>
+        )}
       </MovieContainer>
       <Controls>
         <LeftArrow size="40" onClick={handleLeft} />
         {/* TODO: Handle possible no data */}
         <LikeButton
           size="40"
-          onClick={() => handleLike(data.results[currentIndex].id)}
+          onClick={() =>
+            data.results && handleLike(data.results[currentIndex].id)
+          }
         />
         <RightArrow size="40" onClick={handleRight} />
       </Controls>
