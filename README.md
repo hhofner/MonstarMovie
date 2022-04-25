@@ -1,9 +1,9 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+It is published at movies.hhofner.com
 
 ## Getting Started
 
-First, run the development server:
-
+### Running the development server.
 ```bash
 npm run dev
 # or
@@ -12,27 +12,25 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### Developer Notes
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Recently, I've had a nostalgia for some classic Apple products, in particular 
+the iPod and all its fun intricansies. In particular, I thought the 
+[Coverflow](https://www.oreilly.com/library/view/ipod-the-missing/9780596155834/httpatomoreillycomsourceoreillyimages216284.png.jpg) was always super fun and cool, and I thought that instead of doing the usual grid view for movie search, I thought I would try to implement coverflow but for movies.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+I was almost there, I only wasn't able to get the right amount of translation across the X
+axis right. Depending on which position the movie image was in the list, I think I needed to apply
+a different X-axis translation, and this is also due to the rotation applied.
 
-## Learn More
+On the topic of the tech stack, I chose Next.js (and specifically React) because I think it's
+the easiest for me to go from nothing to something really quickly. I was even able to set up
+a deployment for it on vercel (movies.hhofner.com). 
 
-To learn more about Next.js, take a look at the following resources:
+As for any React project however, there's still a decision to be made for styling.
+I hadn't used `styled-components` in a while and if I were going to try to use animations I thought
+it might be worth trying. I ran into some [annoying problems](https://github.com/styled-components/styled-components/issues/3474) in the dev side however with server side
+and client side styling mismatches due the library, and so I'm now convinced that tailwind or 
+Svelte would have been better (as Svelte's built in animation support is good).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-## Credits
-
-[No Image asset credit](https://www.shoshinsha-design.com/2020/05/%E3%83%8E%E3%83%BC%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%E3%82%A2%E3%82%A4%E3%82%B3%E3%83%B3-%E3%83%94%E3%82%AF%E3%83%88-no-image-icon-2/.html)

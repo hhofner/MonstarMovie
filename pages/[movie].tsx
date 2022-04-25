@@ -3,8 +3,16 @@ import { GetServerSideProps } from "next";
 import styled from "styled-components";
 import { getMoviePath } from "../lib/helpers";
 import { GradientH1 } from "../components/gradientHeader";
+import { HandPointLeft } from "@styled-icons/fa-regular";
+
 import Link from "next/link";
 
+const Header = styled.a`
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+`;
 // Details page for movie
 const MovieDetailContainer = styled.div`
   display: flex;
@@ -28,24 +36,32 @@ const MoviePage = (props: any) => {
     return <div>Movie data could not be found</div>;
   } else {
     return (
-      <MovieDetailContainer>
-        <MovieImage>
-          <Image
-            src={getMoviePath(props.movieDetails.backdrop_path)}
-            width={420}
-            height={600}
-            layout={"fixed"}
-          />
-        </MovieImage>
-        <TextDetails>
-          <GradientH1>{props.movieDetails.original_title}</GradientH1>
-          <MinorDetails>
-            <small>{props.movieDetails.release_date}</small>
-            <small>${props.movieDetails.revenue}</small>
-          </MinorDetails>
-          <p>{props.movieDetails.overview}</p>
-        </TextDetails>
-      </MovieDetailContainer>
+      <>
+        <Link href="/">
+          <Header>
+            <HandPointLeft size="40" />
+            <span>Return to search</span>
+          </Header>
+        </Link>
+        <MovieDetailContainer>
+          <MovieImage>
+            <Image
+              src={getMoviePath(props.movieDetails.backdrop_path)}
+              width={420}
+              height={600}
+              layout={"fixed"}
+            />
+          </MovieImage>
+          <TextDetails>
+            <GradientH1>{props.movieDetails.original_title}</GradientH1>
+            <MinorDetails>
+              <small>{props.movieDetails.release_date}</small>
+              <small>${props.movieDetails.revenue}</small>
+            </MinorDetails>
+            <p>{props.movieDetails.overview}</p>
+          </TextDetails>
+        </MovieDetailContainer>
+      </>
     );
   }
 };

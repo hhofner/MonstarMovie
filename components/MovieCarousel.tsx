@@ -11,6 +11,11 @@ import { useLocalStorage } from "../hooks/localStorage";
 import { useState } from "react";
 import { getMoviePath } from "../lib/helpers";
 
+type Movie = {
+  id: number;
+  imageUrl: string;
+};
+
 const Controls = styled.div`
   display: flex;
   justify-content: center;
@@ -32,8 +37,10 @@ const LeftArrow = styled(ArrowAltCircleLeft)`
 const RightArrow = styled(ArrowAltCircleRight)`
   cursor: pointer;
 `;
-const LikeButton = styled(Heart)`
+const LikeButton = styled(Heart)<{ liked: boolean }>`
   cursor: pointer;
+  ${(props) => props.liked && "color: red;"}
+  transition: color 300ms ease-out;
 `;
 
 const MovieCard = styled.div<{
@@ -55,7 +62,7 @@ const MovieCard = styled.div<{
 
 const MovieCarousel = ({ searchItem }: { searchItem: string }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [likedMovies, setLikedMovies] = useLocalStorage<number[]>("movies", []);
+  const [likedMovies, setLikedMovies] = useLocalStorage<Movie[]>("movies", []);
   const router = useRouter();
 
   const handleRight = () => {
@@ -70,11 +77,13 @@ const MovieCarousel = ({ searchItem }: { searchItem: string }) => {
       setCurrentIndex(currentIndex - 1);
     }
   };
-  const handleLike = (movieId: number) => {
-    if (!likedMovies.includes(movieId)) {
-      setLikedMovies([...likedMovies, movieId]);
+  const handleLike = (movieId: number, movieUrl: string) => {
+    if (!likedMovies.some((movie: Movie) => movie.id === movieId)) {
+      setLikedMovies([...likedMovies, { id: movieId, imageUrl: movieUrl }]);
     } else {
-      setLikedMovies([...likedMovies.filter((id: number) => id !== movieId)]);
+      setLikedMovies([
+        ...likedMovies.filter((movie: Movie) => movie.id !== movieId),
+      ]);
     }
   };
 
@@ -143,11 +152,21 @@ const MovieCarousel = ({ searchItem }: { searchItem: string }) => {
       </MovieContainer>
       <Controls>
         <LeftArrow size="40" onClick={handleLeft} />
-        {/* TODO: Handle possible no data */}
         <LikeButton
           size="40"
           onClick={() =>
-            data.results && handleLike(data.results[currentIndex].id)
+            data.results &&
+            handleLike(
+              data.results[currentIndex].id,
+              data.results[currentIndex].backdrop_path
+            )
+          }
+          liked={
+            data.results
+              ? likedMovies.some(
+                  (movie: Movie) => movie.id === data.results[currentIndex].id
+                )
+              : false
           }
         />
         <RightArrow size="40" onClick={handleRight} />
